@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const { logger, consoleLogger } = require('./middleware/logger'); // ✅ import
 
 // Import routes and middleware
 const bookRoutes = require('./routes/bookRoutes');
@@ -20,6 +21,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // for x-www-form-urlencoded
 app.use(upload.none());              // for form-data
+app.use(logger);        // logs into log.txt
+app.use(consoleLogger); // logs into console
 
 // --- API Endpoints ---
 
