@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/osid-alkourd/Amana-Bookstore-Express-API#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
   }
 }

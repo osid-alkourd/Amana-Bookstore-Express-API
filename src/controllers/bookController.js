@@ -45,9 +45,84 @@ const searchBooks = (req, res, next) => {
   }
 };
 
+/**
+ * Controller to add a new book
+ */
+const addBook = (req, res, next) => {
+  try {
+    const {
+      title,
+      author,
+      description,
+      price,
+      isbn,
+      genre,
+      tags,
+      datePublished,
+      pages,
+      language,
+      publisher,
+      rating = 0,
+      reviewCount = 0,
+      inStock = true,
+      featured = false,
+    } = req.body;
+
+    
+
+    const newBookData = {
+      title,
+      author,
+      description,
+      price,
+      isbn,
+      genre,
+      tags,
+      datePublished,
+      pages,
+      language,
+      publisher,
+      rating,
+      reviewCount,
+      inStock,
+      featured,
+    };
+
+    const newBook = bookService.addBook(newBookData);
+    res.status(201).json(newBook);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+const updateBook = (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const updatedBook = bookService.updateBook(id, updateData);
+
+    if (!updatedBook) {
+      return res.status(404).json({ message: `Book with ID ${id} not found` });
+    }
+
+    res.json(updatedBook);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+
 module.exports = {
   getAllBooks,
   getBookById,
   getFeaturedBooks,
   searchBooks,
+  addBook,
+  updateBook
 };

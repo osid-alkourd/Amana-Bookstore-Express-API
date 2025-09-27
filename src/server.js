@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 
 // Import routes and middleware
 const bookRoutes = require('./routes/bookRoutes');
@@ -10,12 +11,15 @@ const errorHandler = require('./middleware/errorMiddleware');
 
 
 const app = express();
+const upload = multer();
 
 // Define the port. Use the environment variable if available, otherwise default to 3000.
 const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON request bodies. This will be useful for POST and PUT requests later.
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // for x-www-form-urlencoded
+app.use(upload.none());              // for form-data
 
 // --- API Endpoints ---
 

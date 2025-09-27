@@ -15,4 +15,15 @@ router.get('/search', bookController.searchBooks);
 // GET /api/books/:id - Get a specific book by its ID
 router.get('/:id', bookController.getBookById);
 
+
+
+
+
+router.post('/', bookController.addBook);
+
+
+// PUT route - Update a book
+router.put('/:id', bookController.updateBook);
+
+
 module.exports = router;
