@@ -12,6 +12,15 @@ router.get('/featured', bookController.getFeaturedBooks);
 // This must be defined before the /:id route
 router.get('/search', bookController.searchBooks);
 
+
+router.get('/dates', bookController.getBooksByDateRange);
+
+
+// GET /api/books/top-rated - Top 10 rated books
+router.get('/top-rated', bookController.getTopRatedBooks);
+
+
+
 // GET /api/books/:id - Get a specific book by its ID
 router.get('/:id', bookController.getBookById);
 

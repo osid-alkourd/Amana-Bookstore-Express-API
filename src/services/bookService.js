@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const booksFilePath = path.join(__dirname, '../../data/books.json');
+const fs = require("fs");
+const path = require("path");
+const booksFilePath = path.join(__dirname, "../../data/books.json");
 
 const { books } = require("../../data/books.json");
 
@@ -48,6 +48,41 @@ const searchBooks = (query) => {
   );
 };
 
+const getBooksByDateRange = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Guard against invalid dates
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    return [];
+  }
+
+  return books.filter((book) => {
+    if (!book.datePublished) return false; // skip if missing
+
+    const published = new Date(book.datePublished);
+
+    if (isNaN(published.getTime())) return false; // skip invalid
+
+    return published >= start && published <= end;
+  });
+};
+
+
+const getTopRatedBooks = () => {
+  // Clone the array so we don’t mutate the original
+  const scoredBooks = [...books].map(book => ({
+    ...book,
+    score: book.rating * book.reviewCount,
+  }));
+
+  // Sort by score (descending)
+  scoredBooks.sort((a, b) => b.score - a.score);
+
+  // Return only top 10
+  return scoredBooks.slice(0, 10);
+};
+
 const addBook = (bookData) => {
   // Generate new id (increment length for simplicity)
   const newId = (books.length + 1).toString();
@@ -60,18 +95,13 @@ const addBook = (bookData) => {
   books.push(newBook); // in-memory only
 
   // Save updated books array back to books.json
-  fs.writeFileSync(
-    booksFilePath,
-    JSON.stringify({ books }, null, 2),
-    'utf-8'
-  );
+  fs.writeFileSync(booksFilePath, JSON.stringify({ books }, null, 2), "utf-8");
 
   return newBook;
 };
 
-
 const updateBook = (id, updateData) => {
-  const bookIndex = books.findIndex(b => b.id === id);
+  const bookIndex = books.findIndex((b) => b.id === id);
 
   if (bookIndex === -1) {
     return null; // Book not found
@@ -81,21 +111,18 @@ const updateBook = (id, updateData) => {
   books[bookIndex] = { ...books[bookIndex], ...updateData };
 
   // Persist changes back to books.json
-  fs.writeFileSync(
-    booksFilePath,
-    JSON.stringify({ books }, null, 2),
-    'utf-8'
-  );
+  fs.writeFileSync(booksFilePath, JSON.stringify({ books }, null, 2), "utf-8");
 
   return books[bookIndex];
 };
-
 
 module.exports = {
   getAllBooks,
   getBookById,
   getFeaturedBooks,
   searchBooks,
-  addBook, 
-  updateBook
+  addBook,
+  updateBook,
+  getBooksByDateRange,
+  getTopRatedBooks
 };

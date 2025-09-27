@@ -1,4 +1,4 @@
-const bookService = require('../services/bookService');
+const bookService = require("../services/bookService");
 
 const getAllBooks = (req, res, next) => {
   try {
@@ -46,6 +46,51 @@ const searchBooks = (req, res, next) => {
 };
 
 /**
+ * Controller: Get books within a published date range
+ */
+const getBooksByDateRange = (req, res, next) => {
+  try {
+    const { start, end } = req.query;
+
+    if (!start || !end) {
+      return res
+        .status(400)
+        .json({ message: "Please provide start and end dates (YYYY-MM-DD)" });
+    }
+
+    const booksInRange = bookService.getBooksByDateRange(start, end);
+
+    if (booksInRange.length === 0) {
+      return res
+        .status(404)
+        .json({ message: `No books found between ${start} and ${end}` });
+    }
+
+    res.json(booksInRange);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+/**
+ * Controller: Get top 10 rated books
+ */
+const getTopRatedBooks = (req, res, next) => {
+  try {
+    const topBooks = bookService.getTopRatedBooks();
+
+    if (topBooks.length === 0) {
+      return res.status(404).json({ message: "No books found" });
+    }
+
+    res.json(topBooks);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Controller to add a new book
  */
 const addBook = (req, res, next) => {
@@ -68,8 +113,6 @@ const addBook = (req, res, next) => {
       featured = false,
     } = req.body;
 
-    
-
     const newBookData = {
       title,
       author,
@@ -90,12 +133,10 @@ const addBook = (req, res, next) => {
 
     const newBook = bookService.addBook(newBookData);
     res.status(201).json(newBook);
-
   } catch (error) {
     next(error);
   }
 };
-
 
 const updateBook = (req, res, next) => {
   try {
@@ -114,15 +155,13 @@ const updateBook = (req, res, next) => {
   }
 };
 
-
-
-
-
 module.exports = {
   getAllBooks,
   getBookById,
   getFeaturedBooks,
   searchBooks,
   addBook,
-  updateBook
+  updateBook,
+  getBooksByDateRange,
+  getTopRatedBooks
 };
